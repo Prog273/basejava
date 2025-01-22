@@ -3,16 +3,22 @@
  */
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
-    private int size = size();
+    private int size;
 
     void clear() {
+        if (size == 0) return;
         for (int i = 0; i < size; i++) {
             storage[i] = null;
         }
+        size = 0;
     }
 
     void save(Resume r) {
+        if (size >= storage.length) {
+            System.out.println("Хранилище переполнено, нельзя сохранить резюме");
+        }
         storage[size] = r;
+        size++;
     }
 
     Resume get(String uuid) {
@@ -32,11 +38,12 @@ public class ArrayStorage {
         for (int i = 0; i < size; i++) {
             if (storage[i].uuid.equals(uuid)) {
                 indexOfDeletedResume = i;
+                storage[indexOfDeletedResume] = storage[size - 1];
+                storage[size - 1] = null;
+                size--;
                 break;
             }
         }
-        storage[indexOfDeletedResume] = storage[size - 1];
-        storage[size - 1] = null;
     }
 
     /**
@@ -51,12 +58,6 @@ public class ArrayStorage {
     }
 
     int size() {
-        int size = 0;
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] != null) {
-                size++;
-            } else break;
-        }
         return size;
     }
 }
