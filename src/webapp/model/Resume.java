@@ -16,10 +16,6 @@ public class Resume {
         this.uuid = uuid;
     }
 
-    public boolean compareResumeUuids(Resume resume) {
-        return getUuid().equals(resume.getUuid());
-    }
-
     @Override
     public String toString() {
         return uuid;

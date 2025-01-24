@@ -8,7 +8,8 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private Resume[] storage = new Resume[10000];
+    static final int STORAGE_LIMIT = 10000;
+    private final Resume[] storage = new Resume[STORAGE_LIMIT];
     private int size;
 
     public void clear() {
@@ -18,17 +19,17 @@ public class ArrayStorage {
 
     public void update(Resume resume) {
         if (size == 0) {
-            errorMessageForEmptyBase();
+            System.out.println("Ошибка. База данных пуста.");
             return;
         }
 
-        for (int i = 0; i < size; i++) {
-            if (storage[i].compareResumeUuids(resume)) {
-                storage[i] = resume;
-                return;
-            }
+        int indexOfNecessaryResume = findIndex(resume.getUuid());
+        if (indexOfNecessaryResume == -1) {
+            System.out.println("Ошибка. Резюме с UUID " + resume.getUuid() + " нет в базе.");
+            return;
         }
-        System.out.println("Ошибка. Резюме с UUID " + resume.getUuid() + " нет.");
+
+        storage[indexOfNecessaryResume] = resume;
     }
 
     public void save(Resume resume) {
@@ -36,43 +37,42 @@ public class ArrayStorage {
             System.out.println("Хранилище переполнено, нельзя сохранить резюме.");
             return;
         }
-        for (int i = 0; i < size; i++) {
-            if (storage[i].compareResumeUuids(resume)) {
-                System.out.println("Ошибка. Резюме с UUID " + resume.getUuid() + " уже есть.");
-                return;
-            }
+
+        int indexOfNecessaryResume = findIndex(resume.getUuid());
+        if (indexOfNecessaryResume == -1) {
+            storage[size] = resume;
+            size++;
+            return;
         }
-        storage[size] = resume;
-        size++;
+
+        System.out.println("Ошибка. Резюме с UUID " + resume.getUuid() + " уже есть в базе.");
     }
 
     public Resume get(String uuid) {
-        for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                return storage[i];
-            }
+        int indexOfNecessaryResume = findIndex(uuid);
+        if (indexOfNecessaryResume == -1) {
+            System.out.println("Ошибка. Резюме с UUID " + uuid + " нет в базе.");
+            return null;
         }
-        errorMessageForNotExistingUuid(uuid);
-        return null;
+        return storage[indexOfNecessaryResume];
     }
 
     public void delete(String uuid) {
         //следующая проверка - чтобы не было ArrayIndexOutOfBoundsException:
         if (size == 0) {
-            errorMessageForEmptyBase();
+            System.out.println("Ошибка. База данных пуста.");
             return;
         }
 
-        for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                storage[i] = storage[size - 1];
-                storage[size - 1] = null;
-                size--;
-                return;
-            }
+        int indexOfNecessaryResume = findIndex(uuid);
+        if (indexOfNecessaryResume == -1) {
+            System.out.println("Ошибка. Резюме с UUID " + uuid + " нет в базе.");
+            return;
         }
 
-        errorMessageForNotExistingUuid(uuid);
+        storage[indexOfNecessaryResume] = storage[size - 1];
+        storage[size - 1] = null;
+        size--;
     }
 
     /**
@@ -86,11 +86,12 @@ public class ArrayStorage {
         return size;
     }
 
-    public void errorMessageForEmptyBase() {
-        System.out.println("Ошибка. База данных пуста.");
-    }
-
-    public void errorMessageForNotExistingUuid(String uuid) {
-        System.out.println("Ошибка. Резюме с UUID " + uuid + " нет в базе.");
+    public int findIndex(String uuid) {
+        for (int i = 0; i < size; i++) {
+            if (storage[i].getUuid().equals(uuid)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
