@@ -59,7 +59,18 @@ public abstract class AbstractArrayStorage implements Storage {
         return size;
     }
 
+    public void save(Resume resume) {
+        if (size >= STORAGE_LIMIT) {
+            System.out.println("Хранилище переполнено, нельзя сохранить резюме.");
+        } else if (getIndex(resume.getUuid()) > 0) {
+            System.out.println("Ошибка. Резюме с UUID " + resume.getUuid() + " уже есть в базе.");
+        } else {
+            insertElement(storage, resume);
+        }
+    }
 
-    public abstract void save (Resume resume);
+    protected abstract void insertElement(Resume[] resumes, Resume resume);
+
     protected abstract int getIndex(String uuid);
+
 }
