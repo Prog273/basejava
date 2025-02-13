@@ -1,5 +1,8 @@
 package ru.javawebinar.basejava.storage;
 
+import ru.javawebinar.basejava.exception.ExistStorageException;
+import ru.javawebinar.basejava.exception.NotExistStorageException;
+import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
@@ -19,33 +22,29 @@ public abstract class AbstractArrayStorage implements Storage {
         size = 0;
     }
 
-    public void update(Resume resume) {
+    public final void update(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (index < 0) {
-            System.out.println("Ошибка. Резюме с UUID " + resume.getUuid() + " нет в базе.");
+            throw new NotExistStorageException(resume.getUuid());
         } else {
             storage[index] = resume;
         }
     }
 
-    public Resume get(String uuid) {
+    public final Resume get(String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
-            System.out.println("Ошибка. Резюме с UUID " + uuid + " нет в базе.");
-            return null;
+            throw new NotExistStorageException(uuid);
         }
         return storage[index];
     }
 
-    public void delete(String uuid) {
+    public final void delete(String uuid) {
         int index = getIndex(uuid);
-        //следующая проверка - чтобы не было ArrayIndexOutOfBoundsException:
-        if (size == 0) {
-            System.out.println("Ошибка. База данных пуста.");
-        } else if (index < 0) {
-            System.out.println("Ошибка. Резюме с UUID " + uuid + " нет в базе.");
+        if (size == 0 || index < 0) {
+            throw new NotExistStorageException(uuid);
         } else {
-            changeArrayAfterDeletingElement(index);
+            fillEmptySpace(index);
             storage[size - 1] = null;
             size--;
         }
@@ -59,13 +58,13 @@ public abstract class AbstractArrayStorage implements Storage {
         return size;
     }
 
-    public void save(Resume resume) {
+    public final void save(Resume resume) {
         if (size >= STORAGE_LIMIT) {
-            System.out.println("Хранилище переполнено, нельзя сохранить резюме.");
+            throw new StorageException("Хранилище переполнено, нельзя сохранить резюме.", resume.getUuid());
         } else {
             int index = getIndex(resume.getUuid());
             if (index > 0) {
-                System.out.println("Ошибка. Резюме с UUID " + resume.getUuid() + " уже есть в базе.");
+                throw new ExistStorageException(resume.getUuid());
             } else {
                 insertElement(index, resume);
                 size++;
@@ -75,7 +74,7 @@ public abstract class AbstractArrayStorage implements Storage {
 
     protected abstract void insertElement(int index, Resume resume);
 
-    protected abstract void changeArrayAfterDeletingElement(int index);
+    protected abstract void fillEmptySpace(int index);
 
     protected abstract int getIndex(String uuid);
 
