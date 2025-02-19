@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 abstract class AbstractArrayStorageTest {
     protected final Storage storage;
-    protected static final int STORAGE_LIMIT = 10000;
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
@@ -55,6 +54,11 @@ abstract class AbstractArrayStorageTest {
 
     void assertGet(Resume resume) {
         assertEquals(resume, storage.get(resume.getUuid()));
+    }
+
+    @Test
+    void assertGetTest() {
+        assertGet(RESUME_1);
     }
 
     @Test
@@ -102,13 +106,13 @@ abstract class AbstractArrayStorageTest {
     void saveOverflow() {
         storage.clear();
         try {
-            for (int i = 0; i < STORAGE_LIMIT; i++) {
+            for (int i = 0; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
                 storage.save(new Resume("uuid" + i));
             }
         } catch (StorageException e) {
             fail("The array overflow happened earlier than expected.");
         }
-        assertThrows(StorageException.class, () -> storage.save(new Resume("uuid" + (STORAGE_LIMIT + 1))));
+        assertThrows(StorageException.class, () -> storage.save(new Resume("uuid" + (AbstractArrayStorage.STORAGE_LIMIT + 1))));
     }
 
     @Test
