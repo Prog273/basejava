@@ -4,12 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
-import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-abstract class AbstractArrayStorageTest {
+public class ListStorageTest {
     protected final Storage storage;
 
     private static final String UUID_1 = "uuid1";
@@ -29,9 +28,8 @@ abstract class AbstractArrayStorageTest {
         RESUME_4 = new Resume(UUID_4);
     }
 
-
-    public AbstractArrayStorageTest(Storage storage) {
-        this.storage = storage;
+    public ListStorageTest() {
+        storage = new ListStorage();
     }
 
     @BeforeEach
@@ -109,19 +107,6 @@ abstract class AbstractArrayStorageTest {
     @Test
     void size() {
         assertSize(3);
-    }
-
-    @Test
-    void saveOverflow() {
-        storage.clear();
-        try {
-            for (int i = 0; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
-                storage.save(new Resume("uuid" + i));
-            }
-        } catch (StorageException e) {
-            fail("The array overflow happened earlier than expected.");
-        }
-        assertThrows(StorageException.class, () -> storage.save(new Resume("uuid" + (AbstractArrayStorage.STORAGE_LIMIT + 1))));
     }
 
     @Test
