@@ -10,50 +10,35 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public final void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(resume.getUuid());
-        } else {
-            updateElement(index, resume);
-        }
+        Object searchKey = getExistingSearchKey(resume.getUuid());
+        doUpdate(resume, searchKey);
     }
 
-    protected abstract void updateElement(int index, Resume resume);
+    protected abstract void doUpdate(Resume resume, Object searchKey);
 
     @Override
-    public abstract void save(Resume resume);
-
-    protected final void saveElement(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        } else {
-            insertElement(index, resume);
-        }
+    public void save(Resume resume) {
+        Object searchKey = getNotExistingSearchKey(resume.getUuid());
+        doSave(resume, searchKey);
     }
+
+    protected abstract void doSave(Resume resume, Object searchKey);
 
     @Override
     public final Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        return getElement(index);
+        Object searchKey = getExistingSearchKey(uuid);
+        return doGet(searchKey);
     }
 
-    protected abstract Resume getElement(int index);
+    protected abstract Resume doGet(Object searchKey);
 
     @Override
-    public abstract void delete(String uuid);
-
-    protected final void deleteElement(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            fillEmptySpace(index);
-        }
+    public void delete(String uuid) {
+        Object searchKey = getExistingSearchKey(uuid);
+        doDelete(searchKey);
     }
+
+    protected abstract void doDelete(Object searchKey);
 
     @Override
     public abstract Resume[] getAll();
@@ -61,9 +46,23 @@ public abstract class AbstractStorage implements Storage {
     @Override
     public abstract int size();
 
-    protected abstract void insertElement(int index, Resume resume);
+    protected abstract Object getSearchKey(String uuid);
 
-    protected abstract void fillEmptySpace(int index);
+    protected abstract boolean isExist(Object searchKey);
 
-    protected abstract int getIndex(String uuid);
+    protected final Object getExistingSearchKey(String uuid) {
+        Object searchKey = getSearchKey(uuid);
+        if (!isExist(searchKey)) {
+            throw new NotExistStorageException(uuid);
+        }
+        return searchKey;
+    }
+
+    protected final Object getNotExistingSearchKey(String uuid) {
+        Object searchKey = getSearchKey(uuid);
+        if (isExist(searchKey)) {
+            throw new ExistStorageException(uuid);
+        }
+        return searchKey;
+    }
 }

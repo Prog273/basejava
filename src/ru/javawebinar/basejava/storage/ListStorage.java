@@ -14,19 +14,26 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public final void save(Resume resume) {
-        saveElement(resume);
+    protected void doUpdate(Resume resume, Object searchKey) {
+        int index = (Integer) searchKey;
+        storage.set(index, resume);
     }
 
     @Override
-    protected Resume getElement(int index) {
+    protected void doSave(Resume resume, Object searchKey) {
+        storage.add(resume);
+    }
+
+    @Override
+    protected Resume doGet(Object searchKey) {
+        int index = (Integer) searchKey;
         return storage.get(index);
     }
 
     @Override
-    public void delete(String uuid) {
-        deleteElement(uuid);
-        storage.remove(size() - 1);
+    protected void doDelete(Object searchKey) {
+        int index = (Integer) searchKey;
+        storage.remove(index);
     }
 
     @Override
@@ -40,22 +47,15 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateElement(int index, Resume resume) {
-        storage.set(index, resume);
-    }
-
-    @Override
-    protected void insertElement(int index, Resume resume) {
-        storage.add(resume);
-    }
-
-    @Override
-    protected int getIndex(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         return storage.indexOf(new Resume(uuid));
     }
 
     @Override
-    protected void fillEmptySpace(int index) {
-        storage.set(index, storage.get(size() - 1));
+    protected boolean isExist(Object searchKey) {
+        if (!(searchKey instanceof Integer)) {
+            throw new IllegalArgumentException("Search key must be an integer");
+        }
+        return (Integer) searchKey >= 0;  // Если индекс >= 0, значит, элемент существует
     }
 }

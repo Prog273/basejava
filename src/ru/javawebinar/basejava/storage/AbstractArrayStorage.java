@@ -27,15 +27,10 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         if (size >= STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         } else {
-            saveElement(resume);
+            Object searchKey = getNotExistingSearchKey(resume.getUuid());
+            doSave(resume, searchKey);
             size++;
         }
-
-    }
-
-    @Override
-    protected Resume getElement(int index) {
-        return storage[index];
     }
 
     @Override
@@ -43,7 +38,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         if (size == 0) {
             throw new NotExistStorageException(uuid);
         } else {
-            deleteElement(uuid);
+            Object searchKey = getExistingSearchKey(uuid);
+            doDelete(searchKey);
             storage[size - 1] = null;
             size--;
         }
@@ -60,13 +56,29 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateElement(int index, Resume resume) {
+    protected void doUpdate(Resume resume, Object searchKey) {
+        int index = (Integer) searchKey;
         storage[index] = resume;
     }
 
-    protected abstract void insertElement(int index, Resume resume);
+    @Override
+    protected Resume doGet(Object searchKey) {
+        int index = (Integer) searchKey;
+        return storage[index];
+    }
 
-    protected abstract void fillEmptySpace(int index);
+    protected boolean isExist(Object searchKey) {
+        int index;
+        if (searchKey instanceof Integer) {
+            index = (Integer) searchKey;
+        } else {
+            throw new IllegalArgumentException("Search key must be integer");
+        }
 
-    protected abstract int getIndex(String uuid);
+        if (index >= 0 && index < size) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
