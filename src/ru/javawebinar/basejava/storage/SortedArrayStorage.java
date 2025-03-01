@@ -5,20 +5,20 @@ import ru.javawebinar.basejava.model.Resume;
 import java.util.Arrays;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
+
     @Override
-    protected void doSave(Resume resume, Object searchKey) {
-        int index = (Integer) searchKey;
-        if (index < 0) {
-            index = -(index + 1);
+    protected void fillDeletedElement(int index) {
+        int numMoved = size - index - 1;
+        if (numMoved > 0) {
+            System.arraycopy(storage, index + 1, storage, index, numMoved);
         }
-        System.arraycopy(storage, index, storage, index + 1, size - index);
-        storage[index] = resume;
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
-        int index = (Integer) searchKey;
-        System.arraycopy(storage, index + 1, storage, index, size - 1 - index);
+    protected void insertElement(Resume r, int index) {
+        int insertIdx = -index - 1;
+        System.arraycopy(storage, insertIdx, storage, insertIdx + 1, size - insertIdx);
+        storage[insertIdx] = r;
     }
 
     @Override
@@ -27,4 +27,3 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         return Arrays.binarySearch(storage, 0, size, searchKey);
     }
 }
-
