@@ -5,9 +5,11 @@ import java.util.UUID;
 /**
  * Initial resume class
  */
-public class Resume implements Comparable<Resume> {
+public class Resume {
 
     private final String uuid;
+
+    private String fullName;
 
     public Resume() {
         this(UUID.randomUUID().toString());
@@ -15,11 +17,6 @@ public class Resume implements Comparable<Resume> {
 
     public Resume(String uuid) {
         this.uuid = uuid;
-    }
-
-    @Override
-    public int compareTo(Resume o) {
-        return uuid.compareTo(o.uuid);
     }
 
     public String getUuid() {
