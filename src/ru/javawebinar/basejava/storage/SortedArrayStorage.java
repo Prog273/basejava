@@ -1,9 +1,9 @@
 package ru.javawebinar.basejava.storage;
 
+import ru.javawebinar.basejava.model.FullNameGenerator;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
     /*private static class ResumeComparator implements Comparator<Resume> {
@@ -13,7 +13,12 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         }
     }*/
 
-    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> o1.getUuid().compareTo(o2.getUuid());
+//    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> {
+//        if (o1.getFullName().equals(o2.getFullName())) {
+//            return o1.getUuid().compareTo(o2.getUuid());
+//        }
+//        return o1.getFullName().compareTo(o2.getFullName());
+//    };
 
     @Override
     protected void fillDeletedElement(int index) {
@@ -32,7 +37,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected Integer getSearchKey(String uuid) {
-        Resume searchKey = new Resume(uuid);
+        Resume searchKey = new Resume(uuid, FullNameGenerator.generateFullName());
         return Arrays.binarySearch(storage, 0, size, searchKey, RESUME_COMPARATOR);
     }
 }

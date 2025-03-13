@@ -4,7 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
+import ru.javawebinar.basejava.model.FullNameGenerator;
 import ru.javawebinar.basejava.model.Resume;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,16 +20,21 @@ public abstract class AbstractStorageTest {
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
 
+    private static final String NAME_1 = FullNameGenerator.generateFullName();
+    private static final String NAME_2 = FullNameGenerator.generateFullName();
+    private static final String NAME_3 = FullNameGenerator.generateFullName();
+    private static final String NAME_4 = FullNameGenerator.generateFullName();
+
     protected static final Resume RESUME_1;
     protected static final Resume RESUME_2;
     protected static final Resume RESUME_3;
     private static final Resume RESUME_4;
 
     static {
-        RESUME_1 = new Resume(UUID_1);
-        RESUME_2 = new Resume(UUID_2);
-        RESUME_3 = new Resume(UUID_3);
-        RESUME_4 = new Resume(UUID_4);
+        RESUME_1 = new Resume(UUID_1, NAME_1);
+        RESUME_2 = new Resume(UUID_2, NAME_2);
+        RESUME_3 = new Resume(UUID_3, NAME_3);
+        RESUME_4 = new Resume(UUID_4, NAME_4);
     }
 
 
@@ -45,8 +54,8 @@ public abstract class AbstractStorageTest {
     void clear() {
         storage.clear();
         assertEquals(0, storage.size(), "expected storage to be empty");
-        Resume[] emptyArr = storage.getAll();
-        assertArrayEquals(emptyArr, new Resume[0]);
+        List<Resume> emptyList = storage.getAllSorted();
+        assertEquals(emptyList, new ArrayList<Resume>());
     }
 
     @Test
@@ -101,8 +110,11 @@ public abstract class AbstractStorageTest {
 
     @Test
     void getAll() {
-        Resume[] allResumes = new Resume[]{RESUME_1, RESUME_2, RESUME_3};
-        assertArrayEquals(allResumes, storage.getAll());
+        List<Resume> resumes = new ArrayList<>();
+        resumes.add(RESUME_1);
+        resumes.add(RESUME_2);
+        resumes.add(RESUME_3);
+        assertEquals(resumes, storage.getAllSorted());
     }
 
     @Test
