@@ -7,8 +7,7 @@ import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.FullNameGenerator;
 import ru.javawebinar.basejava.model.Resume;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,6 +36,12 @@ public abstract class AbstractStorageTest {
         RESUME_4 = new Resume(UUID_4, NAME_4);
     }
 
+    protected static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> {
+        if (o1.getFullName().equals(o2.getFullName())) {
+            return o1.getUuid().compareTo(o2.getUuid());
+        }
+        return o1.getFullName().compareTo(o2.getFullName());
+    };
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -109,12 +114,10 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    void getAll() {
-        List<Resume> resumes = new ArrayList<>();
-        resumes.add(RESUME_1);
-        resumes.add(RESUME_2);
-        resumes.add(RESUME_3);
-        assertEquals(resumes, storage.getAllSorted());
+    void getAllSorted() {
+        List<Resume> expectedResumes = Arrays.asList(RESUME_1, RESUME_2, RESUME_3);
+        Collections.sort(expectedResumes, RESUME_COMPARATOR);
+        assertEquals(expectedResumes, storage.getAllSorted());
     }
 
     @Test

@@ -2,11 +2,9 @@ package ru.javawebinar.basejava.storage;
 
 import org.junit.jupiter.api.Test;
 import ru.javawebinar.basejava.exception.StorageException;
-import ru.javawebinar.basejava.model.FullNameGenerator;
 import ru.javawebinar.basejava.model.Resume;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 abstract class AbstractArrayStorageTest extends AbstractStorageTest {
     public AbstractArrayStorageTest(Storage storage) {
@@ -16,15 +14,10 @@ abstract class AbstractArrayStorageTest extends AbstractStorageTest {
     @Test
     void saveOverflow() {
         storage.clear();
-        try {
-            for (int i = 0; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
-                storage.save(new Resume("uuid" + i, FullNameGenerator.generateFullName()));
-            }
-        } catch (StorageException e) {
-            fail("The array overflow happened earlier than expected.");
+        for (int i = 0; i < AbstractArrayStorage.STORAGE_LIMIT - 1; i++) {
+            storage.save(new Resume("uuid" + i, "Name" + i));
         }
-        assertThrows(StorageException.class, () ->
-                storage.save(new Resume("uuid" + (AbstractArrayStorage.STORAGE_LIMIT + 1), FullNameGenerator.generateFullName())));
-
+        storage.save(new Resume("uuid_last", "Name Last"));
+        assertThrows(StorageException.class, () -> storage.save(new Resume("overflow_uuid", "Overflow Name")));
     }
 }
