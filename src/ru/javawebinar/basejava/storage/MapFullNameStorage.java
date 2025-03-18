@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapStorage extends AbstractStorage {
-    protected final Map<String, Resume> storage = new HashMap<>();
+public class MapFullNameStorage extends AbstractStorage {
+    private final Map<String, Resume> storage = new HashMap<>();
 
     @Override
     protected void doUpdate(Resume resume, Object searchKey) {
@@ -31,13 +31,24 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected String getSearchKey(String uuid) {
-        return uuid;
+    protected String getSearchKey(String fullName) {
+        for (Resume r : storage.values()) {
+            if (r.getFullName().equals(fullName)) {
+                return fullName;
+            }
+        }
+        return null;
     }
+
 
     @Override
     protected boolean isExist(Object searchKey) {
-        return storage.containsKey(searchKey);
+        for (Resume r : storage.values()) {
+            if (r.getFullName().equals((String) searchKey)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
