@@ -1,10 +1,10 @@
 package ru.javawebinar.basejava.storage;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@ RunWith(Suite.class)
-@Suite.SuiteClasses({
+@Suite
+@SelectClasses({
         ArrayStorageTest.class,
         SortedArrayStorageTest.class,
         ListStorageTest.class,
@@ -12,5 +12,4 @@ import org.junit.runners.Suite;
         MapResumeStorageTest.class
 })
 public class AllStorageTest {
-
 }

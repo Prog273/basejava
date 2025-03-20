@@ -1,7 +1,7 @@
 package ru.javawebinar.basejava.storage;
 
 public class MapResumeStorageTest extends AbstractStorageTest {
-    public MapResumeStorageTest(Storage storage) {
+    public MapResumeStorageTest() {
         super(new MapResumeStorage());
     }
 
