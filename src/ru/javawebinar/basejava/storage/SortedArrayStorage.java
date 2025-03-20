@@ -5,19 +5,6 @@ import ru.javawebinar.basejava.model.Resume;
 import java.util.Arrays;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
-    /*private static class ResumeComparator implements Comparator<Resume> {
-        @Override
-        public int compare(Resume o1, Resume o2) {
-            return o1.getUuid().compareTo(o2.getUuid());
-        }
-    }*/
-
-//    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> {
-//        if (o1.getFullName().equals(o2.getFullName())) {
-//            return o1.getUuid().compareTo(o2.getUuid());
-//        }
-//        return o1.getFullName().compareTo(o2.getFullName());
-//    };
 
     @Override
     protected void fillDeletedElement(int index) {
