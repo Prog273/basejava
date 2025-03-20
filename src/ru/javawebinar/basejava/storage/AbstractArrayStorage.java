@@ -34,10 +34,10 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    public List<Resume> getAllSorted() {
+    @Override
+    public List<Resume> doGetAll() {
         List<Resume> resumes = Arrays.stream(storage, 0, size)
                         .collect(Collectors.toList());
-        resumes.sort(RESUME_COMPARATOR);
         return resumes;
     }
 

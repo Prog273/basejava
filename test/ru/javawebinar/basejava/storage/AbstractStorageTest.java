@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
-import ru.javawebinar.basejava.model.FullNameGenerator;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.*;
@@ -19,10 +18,10 @@ public abstract class AbstractStorageTest {
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
 
-    private static final String NAME_1 = FullNameGenerator.generateFullName();
-    private static final String NAME_2 = FullNameGenerator.generateFullName();
-    private static final String NAME_3 = FullNameGenerator.generateFullName();
-    private static final String NAME_4 = FullNameGenerator.generateFullName();
+    private static final String NAME_1 = "Name1";
+    private static final String NAME_2 = "Name2";
+    private static final String NAME_3 = "Name3";
+    private static final String NAME_4 = "Name4";
 
     protected static final Resume RESUME_1;
     protected static final Resume RESUME_2;
@@ -65,8 +64,9 @@ public abstract class AbstractStorageTest {
 
     @Test
     void update() {
-        storage.update(RESUME_3);
-        assertSame(RESUME_3, storage.get(UUID_3));
+        Resume resume = new Resume(UUID_3, "some name");
+        storage.update(resume);
+        assertSame(resume, storage.get(UUID_3));
     }
 
     @Test

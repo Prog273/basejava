@@ -1,6 +1,5 @@
 package ru.javawebinar.basejava;
 
-import ru.javawebinar.basejava.model.FullNameGenerator;
 import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.storage.ArrayStorage;
 import ru.javawebinar.basejava.storage.Storage;
@@ -12,9 +11,9 @@ public class MainTestArrayStorage {
     private final static Storage ARRAY_STORAGE = new ArrayStorage();
 
     public static void main(String[] args) {
-        final Resume r1 = new Resume("uuid1", FullNameGenerator.generateFullName());
-        final Resume r2 = new Resume("uuid2", FullNameGenerator.generateFullName());
-        final Resume r3 = new Resume("uuid3", FullNameGenerator.generateFullName());
+        final Resume r1 = new Resume("uuid1", "name1");
+        final Resume r2 = new Resume("uuid2", "name2");
+        final Resume r3 = new Resume("uuid3", "name3");
 
         ARRAY_STORAGE.save(r1);
         ARRAY_STORAGE.save(r2);
