@@ -10,12 +10,8 @@ import java.util.List;
 
 public abstract class AbstractStorage implements Storage {
 
-    protected static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> {
-        if (o1.getFullName().equals(o2.getFullName())) {
-            return o1.getUuid().compareTo(o2.getUuid());
-        }
-        return o1.getFullName().compareTo(o2.getFullName());
-    };
+    protected static final Comparator<Resume> RESUME_COMPARATOR = Comparator.comparing(Resume::getFullName)
+            .thenComparing(Resume::getUuid);
 
     @Override
     public final void update(Resume resume) {

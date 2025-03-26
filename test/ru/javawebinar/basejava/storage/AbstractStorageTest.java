@@ -9,6 +9,7 @@ import ru.javawebinar.basejava.model.Resume;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static ru.javawebinar.basejava.storage.AbstractStorage.RESUME_COMPARATOR;
 
 public abstract class AbstractStorageTest {
     protected final Storage storage;
@@ -35,13 +36,6 @@ public abstract class AbstractStorageTest {
         RESUME_4 = new Resume(UUID_4, NAME_4);
     }
 
-    protected static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> {
-        if (o1.getFullName().equals(o2.getFullName())) {
-            return o1.getUuid().compareTo(o2.getUuid());
-        }
-        return o1.getFullName().compareTo(o2.getFullName());
-    };
-
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
     }
@@ -64,7 +58,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     void update() {
-        Resume resume = new Resume(UUID_3, "some name");
+        Resume resume = new Resume(UUID_3, "");
         storage.update(resume);
         assertSame(resume, storage.get(UUID_3));
     }
@@ -134,5 +128,6 @@ public abstract class AbstractStorageTest {
     void save() {
         storage.save(RESUME_4);
         assertSize(4);
+        assertGet(RESUME_4);
     }
 }
