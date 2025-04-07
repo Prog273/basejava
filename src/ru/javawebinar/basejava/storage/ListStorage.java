@@ -5,7 +5,7 @@ import ru.javawebinar.basejava.model.Resume;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
     protected List<Resume> storage = new ArrayList<>();
 
     @Override
@@ -14,25 +14,25 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doUpdate(Resume resume, Object searchKey) {
-        int index = (Integer) searchKey;
+    protected void doUpdate(Resume resume, Integer searchKey) {
+        int index = searchKey;
         storage.set(index, resume);
     }
 
     @Override
-    protected void doSave(Resume resume, Object searchKey) {
+    protected void doSave(Resume resume, Integer searchKey) {
         storage.add(resume);
     }
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        int index = (Integer) searchKey;
+    protected Resume doGet(Integer searchKey) {
+        int index = searchKey;
         return storage.get(index);
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
-        int index = (Integer) searchKey;
+    protected void doDelete(Integer searchKey) {
+        int index = searchKey;
         storage.remove(index);
     }
 
@@ -58,10 +58,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        if (!(searchKey instanceof Integer)) {
-            throw new IllegalArgumentException("Search key must be an integer");
-        }
-        return (Integer) searchKey >= 0;  // Если индекс >= 0, значит, элемент существует
+    protected boolean isExist(Integer searchKey) {
+        return searchKey >= 0;  // Если индекс >= 0, значит, элемент существует
     }
 }
